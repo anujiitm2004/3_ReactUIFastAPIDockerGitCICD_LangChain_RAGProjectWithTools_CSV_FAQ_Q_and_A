@@ -3,7 +3,18 @@ from fastapi import FastAPI, Query
 from pydantic import BaseModel
 from langchain_helper import get_qa_chain, create_vector_db
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="LangChain GenAI Q&A API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 👈 For testing, allow all
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Optional: Endpoint to trigger knowledge base creation
 @app.post("/create_vector_db")

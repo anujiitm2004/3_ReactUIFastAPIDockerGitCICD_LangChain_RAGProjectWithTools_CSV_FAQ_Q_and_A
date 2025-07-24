@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LangChain GenAI UI</title>
+</head>
+<body>
+  <h1>LangChain GenAI UI</h1>
+
+  <h2>Create Vector DB</h2>
+  <button onclick="createDB()">Create Vector DB</button>
+  <pre id="createRes"></pre>
+
+  <hr/>
+
+  <h2>Ask a Question</h2>
+  <input id="q" placeholder="Your question..." style="width: 300px;" />
+  <button onclick="ask()">Ask</button>
+  <pre id="res"></pre>
+
+  <script>
+    const baseURL = "http://ec2-54-90-94-140.compute-1.amazonaws.com:8000";
+
+    async function createDB() {
+      document.getElementById("createRes").innerText = "⏳ Creating vector DB...";
+      try {
+        const res = await fetch(baseURL + "/create_vector_db", {
+          method: "POST"
+        });
+        const data = await res.json();
+        document.getElementById("createRes").innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("createRes").innerText = "❌ Error: " + err;
+      }
+    }
+
+    async function ask() {
+      const question = document.getElementById("q").value;
+      if (!question) {
+        alert("Please enter a question!");
+        return;
+      }
+      document.getElementById("res").innerText = "⏳ Asking...";
+      try {
+        const res = await fetch(baseURL + "/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+        const data = await res.json();
+        document.getElementById("res").innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("res").innerText = "❌ Error: " + err;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,37 +1,24 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-
 from langchain_helper import get_qa_chain, create_vector_db
 
 app = FastAPI(title="LangChain GenAI Q&A API")
 
-# ✅ CORS Fix
+# ✅ Secure + Functional CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://ec2-34-228-18-34.compute-1.amazonaws.com:8080"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Extra fallback for OPTIONS
-@app.options("/{rest_of_path:path}")
-def preflight_handler(request: Request, rest_of_path: str):
-    return JSONResponse(content={}, headers={
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-        "Access-Control-Allow-Headers": "*"
-    })
-
-# ✅ Create vector DB
 @app.post("/create_vector_db")
 def create_db():
     create_vector_db()
     return {"message": "Vector database created successfully."}
 
-# ✅ Ask a question
 class QuestionRequest(BaseModel):
     question: str
 

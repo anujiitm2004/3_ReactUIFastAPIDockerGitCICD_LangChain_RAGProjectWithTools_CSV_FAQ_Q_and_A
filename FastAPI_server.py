@@ -8,8 +8,8 @@ app = FastAPI(title="LangChain GenAI Q&A API")
 # ✅ Secure + Functional CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://ec2-34-228-18-34.compute-1.amazonaws.com:5174"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
